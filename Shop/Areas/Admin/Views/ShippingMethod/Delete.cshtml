@@ -1,0 +1,30 @@
+﻿@model Shop.Models.ShippingMethod
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Delete</h1>
+<br />
+<br /><br />
+<form asp-action="Delete" method="post">
+    <div class="border rounded bg-light px-md-4 p-4">
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Name"></label>
+            </div>
+            <div class="col-6">
+                <input readonly class="form-control" asp-for="Name" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Price"></label>
+            </div>
+            <div class="col-6">
+                <input readonly class="form-control" asp-for="Price" />
+            </div>
+        </div>
+        <partial name="_DeleteandBackPartial" model="Model.Id" />
+    </div>
+</form>

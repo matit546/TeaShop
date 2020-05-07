@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Product>
+@using Shop.Utility
+
+@if (Model.Count() > 0)
+{
+    <div class=" col-lg-12 col-sm-12 post @Model.FirstOrDefault().Category.Name.Replace(" ", string.Empty) product-shop" >
+        <div class="row offset-6">
+            <h2 class="text-dark  font-weight-bold">
+                @Model.FirstOrDefault().Category.Name
+            </h2>
+        </div>
+        <hr />
+        <br />
+        @foreach (var item in Model)
+        {
+
+            <div class="text-center box col-4  col-sm-4">
+                <div class=" rounded box-shadow "id="@item.Id"onmouseover="myMoveFunction(@item.Id)"  onmouseout="myMoveFunction1(@item.Id)">
+                    <br />
+                    <div class="d-none d-lg-block">
+                    <a asp-action="Details" asp-route-id="@item.Id"><img id="picture" src="@item.Image"  height="250" width="250" style="border-radius:2px;border:1px solid #808080" /></a>
+                    </div>
+                    <a asp-action="Details" asp-route-id="@item.Id"><h3 style="color:black"> @Html.DisplayFor(m => item.Name)</h3></a>
+                    <p style="font-size:12px">@item.ShortDescription</p>
+
+                    <div class="row">
+                        <h3 class="font-weight-bold offset-4">$@item.Price/@item.Weight</h3>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+
+    </div>
+}

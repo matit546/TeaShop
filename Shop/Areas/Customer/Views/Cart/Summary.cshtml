@@ -1,0 +1,249 @@
+﻿@model Shop.Models.ViewModels.OrderDetailsCart
+@using Shop.Utility
+@using Microsoft.Extensions.Options
+
+@inject IOptions<StripeSettings> Stripe
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" >
+    @if (Model.ListCart.Count > 0)
+    {
+        <br />
+        <input id="userId" asp-for="@Model.ListCart[0].UserId" hidden />
+
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-success text-white ml-0 row container">
+                    <div class="col-6">
+                        <i class="fa fa-cart-arrow-down"></i>
+                        Order Summary
+                    </div>
+                    <div class="col-6 text-right">
+                        <a asp-area="Customer" asp-controller="Home" asp-action="Index" class=" btn btn-outline-success btn-sm text-white">Back</a>
+                    </div>
+                </div>
+                <div class=" box-shadow">
+                    <div class="card-body">
+                        <div class="container rounded p-2">
+                            <div class="row">
+                                <div class="col-12 col-lg-6 pb-4">
+                                    <div class="row">
+                                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-info">Details:</span>
+                                        </h4>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-4">
+                                            <label>Name</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input asp-for="@Model.OrderHeader.PickupName" id="PickupName" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-4">
+                                            <label>Street Address</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input asp-for="@Model.OrderHeader.StreetAddress" id="StreetAddress" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-4">
+                                            <label>Postal Code</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input asp-for="@Model.OrderHeader.PostalCode" id="PostalCode" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-4">
+                                            <label>State</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input asp-for="@Model.OrderHeader.State"  id="State" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-4">
+                                            <label>City</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input asp-for="@Model.OrderHeader.City"  id="City"  class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-4">
+                                            <label>Phone Number</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input asp-for="@Model.OrderHeader.PhoneNumber" id="PhoneNumber"  class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-4">
+                                            <label>Shipping Method</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select asp-for="@Model.OrderHeader.ShippingMethodId" id="ShippingMethodId" onchange="Cost()" name="ShippingMethodId" class="form-control" asp-items="ViewBag.ShippingMethodId">
+                                     <option value="-1">Choose shipping Method</option>
+                                                                        </select>
+                                        </div>
+                                    </div>
+                                    <div class="row m-1">
+                                        <div class="col-4">
+                                            <label>Additional Instructions</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <textarea asp-for="@Model.OrderHeader.Comments" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-5 offset-lg-1">
+                                    <h4 class="text-info">
+                                       Summary:
+                                    </h4>
+                                    <ul class="list-group mb-3">
+                                        @{ var total = 0.0;}
+
+                                        @foreach (var details in Model.ListCart)
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="my-0">
+                                                        @details.Product.Name
+                                                    </h6>
+                                                    <small class="text-muted">Quanity:@details.Count</small>
+                                                </div>
+                                                <div class="text-muted">$@(details.Product.Price * details.Count)</div>
+                                                @{ total += (details.Product.Price * details.Count);}
+                                            </li>
+                                                    }
+                                    
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <h6>Shipping:</h6>
+                                                <span class="text-muted -1">$0</span>
+                                                @foreach (var item in Model.ShippingMethod)
+                                                {
+                                                    <span class="@item.Id text-muted" id="cost" style="display:none">$@item.Price</span>
+                                                }
+                                            </li>
+                                        
+                                            <li class="list-group-item d-flex justify-content-between bg-light">
+                                                <small class="text-info">Total:</small>
+                                                <span class="text-muted -1">$@Model.OrderHeader.OrderTotal</span>
+                                                @foreach (var item in Model.ShippingMethod)
+                                                {
+                                                    <span class="@item.Id text-secondary" style="display:none">$@(Model.OrderHeader.OrderTotal + item.Price)</span>
+                                                }
+                                         
+                                            </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="card-footer">
+                          
+                        <div class="row">
+
+                            <div class="col-12 col-md-4 offset-md-8">
+
+                                <button type="submit" id="btnPlacoOrder" onclick="return validateInput()" value="Place Order" class="btn btn-success form-control">Place Order</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    else
+    {
+        <div class="box-shadow">No items added to the shopping cart..</div>
+    }
+
+</form>
+
+@section Scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        function validateInput() {
+            var name = document.getElementById("PickupName").value;
+            var address = document.getElementById("StreetAddress").value;
+            var code = document.getElementById("PostalCode").value;
+            var state = document.getElementById("State").value;
+            var city = document.getElementById("City").value;
+            var number = document.getElementById("PhoneNumber").value;
+            var method = document.getElementById("ShippingMethodId").value;
+            if (name.toString() == '') {
+                alert("Please enter pickup name");
+                return false;
+            }
+            else
+            {
+                if (address.toString() == '') {
+                    alert("Please enter your address");
+                    return false;
+                }
+                else
+                {
+                    if (code.toString() == '') {
+                        alert("Please enter your Postal code");
+                        return false;
+                    }
+                    else
+                    {
+                        if (state.toString() == '') {
+                            alert("Please enter your state");
+                            return false;
+                        }
+                        else
+                        {
+                            if (city.toString() == '') {
+                                alert("Please enter your city");
+                                return false;
+                            }
+                            else
+                            {
+                                if (number.toString() == '') {
+                                    alert("Please enter your Phone number");
+                                    return false;
+                                }
+                                else
+                                {
+                                    if (method.toString() == '-1') {
+                                        alert("Please select method shipping");
+                                        return false;
+                                    }
+                                    else
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        $('select').on('change', function () {
+            $('span').hide();
+            $('.' + this.value).toggle();
+        });
+
+        function Check() {
+
+        }
+        
+
+    </script>
+}

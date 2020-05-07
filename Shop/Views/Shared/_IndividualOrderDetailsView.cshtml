@@ -1,0 +1,144 @@
+﻿@model Shop.Models.ViewModels.OrderDetailsViewModel
+@using Shop.Utility
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<form method="post">
+    <div class="container row border ml-1 border rounded border-info"  style="padding:5px" >
+        <div class="col-lg-8 col-12" style="border-right:1px solid #808080">
+            <br />
+            <input type="hidden" asp-for="OrderHeader.Id" />
+
+            <div class="form-group row">
+                <div class="col-3">
+                    <label>Name</label>
+
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.PickupName" disabled class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="OrderHeader.User.Email"></label>
+
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.User.Email" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="OrderHeader.User.PhoneNumber"></label>
+
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.PhoneNumber" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="OrderHeader.OrderTotal"></label>
+
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.OrderTotal" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="OrderHeader.OrderDate"></label>
+
+                </div>
+                <div class="col-9">
+                    <input value="@Model.OrderHeader.OrderDate.ToShortDateString() @Model.OrderHeader.OrderDate.ToShortTimeString()" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="OrderHeader.Comments"></label>
+
+                </div>
+                <div class="col-9">
+                    <input asp-for="@Model.OrderHeader.Comments" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="OrderHeader.ShippingMethod"></label>
+
+                </div>
+                <div class="col-9">
+                    <input asp-for="OrderHeader.ShippingMethod.Name" disabled class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-12">
+            <h3 class="d-flex justify-content-between align-content-center mb-4">
+                <span class="text-muted">Order ID:</span>
+                <span class="badge badge-success badge-pill">@Model.OrderHeader.Id</span>
+            </h3>
+            <ul class="list-group mb-3">
+                @{ var total = 0.0;}
+                @foreach (var details in Model.OrderDetails)
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div>
+                            <h6 class="my-0">  @details.Name </h6>
+                            <small class="text-muted">Quanity: @details.Count</small>
+                        </div>
+                        <span class="text-muted">$@(details.Price * details.Count)</span>
+                        @{ total += (details.Price * details.Count);}
+                    </li>
+                }
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <h6 class="text-info">Shipping Cost</h6>
+                    <small class="text-info">$@Model.OrderHeader.ShippingMethod.Price</small>
+                </li>
+
+
+                @if (Model.OrderHeader.CouponCode != null)
+                {
+                    <li class="list-group-item d-flex justify-content-between bg-light">
+                        <div>
+                            <h6 class="my-0">  Promo Code </h6>
+                            <small class="text-muted">@Model.OrderHeader.CouponCode</small>
+                        </div>
+                        <span class="text-muted">-$@(Model.OrderHeader.OrderTotalOriginal + Model.OrderHeader.ShippingMethod.Price - Model.OrderHeader.OrderTotal)</span>
+                    </li>
+                }
+
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                    <span class="text-info">Total (USD)</span>
+                    <strong class="text-info">$@Model.OrderHeader.OrderTotal</strong>
+                </li>
+            </ul>
+
+            @if (Model.OrderHeader.Status.Equals(StaticDefault.StatusReady) && (User.IsInRole(StaticDefault.ManagerUser) || User.IsInRole(StaticDefault.FrontDeskUser)))
+            {
+
+                <button type="submit" asp-action="OrderDone" asp-route-OrderId="@Model.OrderHeader.Id" asp-controller="Order" class="btn btn-success form-control">
+                    <i class="fa fa-thums-up">
+                        Confirm Pickup
+
+                    </i>
+                </button>
+            }
+            @if (Model.OrderHeader.Status.Equals(StaticDefault.StatusReadyForShihment) && (User.IsInRole(StaticDefault.ManagerUser) || User.IsInRole(StaticDefault.FrontDeskUser)))
+            {
+
+                <button type="submit" asp-action="OrderShipped" asp-route-OrderId="@Model.OrderHeader.Id" asp-controller="Order" class="btn btn-success form-control">
+                    <i class="fa fa-thums-up">
+                        Confrim Shipment
+
+                    </i>
+                </button>
+            }
+
+        </div>
+    </div>
+</form>

@@ -1,0 +1,100 @@
+﻿@model Shop.Models.ViewModels.SubCategory_Category_ViewModel
+@using Shop.Extensions
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h3 class="text-info">Create</h3>
+<br /><br />
+
+<partial name="_StatusMessage" model="Model.Message" />
+
+      <div class="border rounded bg-light row">
+          <div class="col-8 border-right ">
+              <form asp-action="Create">
+                  <div class="px-md-4 p-4">
+                      <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                      <div class="form-group row">
+                          <div class="col-2">
+                              <label class="col-form-label" asp-for="SubCategory.CategoryId"></label>
+                          </div>
+                          <div class="col-6">
+                              <select id="Categorylist" asp-for="SubCategory.CategoryId" asp-items="Model.CategoryList.ToSelectListItems(Model.SubCategory.CategoryId)" class="form-control"></select>
+                          </div>
+                      </div>
+
+                      <div class="form-group row">
+                          <div class="col-2">
+                              <label class="col-form-label" asp-for="SubCategory.Name"></label>
+                          </div>
+                          <div class="col-6">
+                              <input class="form-control" asp-for="SubCategory.Name" />
+                          </div>
+                          <span asp-validation-for="SubCategory.Name" class="text-danger"></span>
+                      </div>
+                      <partial name="_CreateandBackPartial" />
+                  </div>
+              </form>
+          </div>
+              <div class="col-3 offset-1 border-light px-md-4 p-4">
+                  @if (Model.SubCategoryList.Count() > 0)
+                  {
+                      <p> Existing Subcategories: </p>
+
+                      <div  id="SubCategoryList">
+                          <ul class="list-group"></ul>
+                      </div>
+                  }
+
+
+              </div>
+      </div>
+
+
+@section Scripts
+{ 
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+        function updateSubCategoryList()
+        {
+            var categorySelected = document.getElementById("Categorylist").value;
+            $list = $('#SubCategoryList');
+         
+            $.ajax({
+                url: '/Admin/SubCategory/GetSubCategory/?id=' + categorySelected,
+                type: 'GET',
+                dataType: 'text',
+                success: function (data)
+                {
+              
+                    results = JSON.parse(data);
+                    $list.html('');
+                    $list.append(' <ul class="list-group"> ');
+
+                         for (i in results)
+                         {
+                              $list.append('<li class="list-group-item">'+ results[i].text + '</li>');
+                         }
+                         $list.append('</ul>');
+                }
+              
+            });
+                       
+        }
+
+        $(document).ready(function () {
+            updateSubCategoryList();
+        });
+
+        $("#Categorylist").on("change", function () {
+            updateSubCategoryList();
+        });
+   
+
+    </script>
+}

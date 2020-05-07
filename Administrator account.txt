@@ -1,0 +1,2 @@
+login:admin@gmail.com
+password:Haslo1!

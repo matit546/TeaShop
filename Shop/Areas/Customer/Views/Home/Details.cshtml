@@ -1,0 +1,119 @@
+﻿@model Shop.Models.ViewModels.ShoppingCart
+@using Shop.Extensions
+@using Shop.Utility
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h3 class="text-info">Product Details</h3>
+<br /><br />
+<form method="post" asp-action="Create" >
+    <div class="border rounded bg-light px-md-4 p-4 row">
+        <input type="hidden" asp-for="ProductId" />
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="col-12 pb-4 d-md-none">
+            <img src="@Model.Product.Image" width="100%" style="border-radius:5px;border:1px solid#000" />
+        </div>
+        <div class="col-md-8">
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold" asp-for="Product.Name"></label>
+                </div>
+                <div class="col-md-10">
+                    <input class="form-control" readonly asp-for="Product.Name" />
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold" asp-for="Product.Description"></label>
+                </div>
+                <div class="col-md-10">
+                    <div class="border p-2" style="background-color:white;">    @Html.Raw(Model.Product.Description)</div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold">Short</label>
+                </div>
+                <div class="col-md-10">
+                    <input class="form-control" readonly asp-for="Product.ShortDescription" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold" asp-for="Product.Country"></label>
+                </div>
+                <div class="col-md-10">
+                    <input class="form-control" readonly asp-for="Product.Country" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold" asp-for="Product.Weight"></label>
+                </div>
+                <div class="col-md-10 ">
+                    <input class="form-control" readonly asp-for="Product.Weight" />
+
+                </div>
+                <span asp-validation-for="Product.Weight" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold" asp-for="Product.Price"></label>
+                </div>
+                <div class="col-md-10">
+                    <input class="form-control" readonly asp-for="Product.Price" />
+                </div>
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold" asp-for="Product.CategoryId"></label>
+                </div>
+                <div class="col-md-10">
+                    <input class="form-control" readonly asp-for="Product.Category.Name" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold" asp-for="Product.SubCategoryId"></label>
+                </div>
+                <div class="col-md-10">
+                    <input class="form-control" readonly asp-for="Product.SubCategory.Name" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label class="text-success font-weight-bold" asp-for="Count"></label>
+                </div>
+                <div class="col-md-10">
+                    <input class="form-control"  asp-for="Count" />
+                </div>
+                <span asp-validation-for="Count" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                </div>
+                    <div class="col-md-5">
+                        <a asp-action="Index" class="btn btn-secondary form-control">Back</a>
+                    </div>
+                    <div class="col-md-5">
+                        <button type="submit" value="Add to Cart" class="btn btn-primary form-control">Add to Cart</button>
+                    </div>
+            </div>
+        </div>
+        <div class="col-3 offset-1 d-none d-md-block ">
+            <img src="@Model.Product.Image" width="100%" style="border-radius" />
+        </div>
+
+    </div>
+</form>
+
+@section Scripts{
+
+
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

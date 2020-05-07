@@ -1,0 +1,133 @@
+﻿@model Shop.Models.ViewModels.ProductViewModel
+@using Shop.Extensions
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h3 class="text-info">Delete</h3>
+<br /><br />
+<form method="post">
+    <div class="border rounded bg-light px-md-4 p-4 row">
+        <input type="hidden" asp-for="Product.Id" />
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="col-8">
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Product.Name"></label>
+                </div>
+                <div class="col-10">
+                    <input class="form-control" readonly asp-for="Product.Name" />
+                </div>
+                <span asp-validation-for="Product.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Product.Description"></label>
+                </div>
+                <div class="col-10">
+                    @Html.TextAreaFor(x => x.Product.Description)
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Product.ShortDescription"></label>
+                </div>
+                <div class="col-10">
+                    @Html.EditorFor(model => model.Product.ShortDescription, new { htmlAttributes = new { @class = "form-control", @maxlength = "50", @readonly = "readonly" } })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Product.Country"></label>
+                </div>
+                <div class="col-10">
+                    <input class="form-control" readonly asp-for="Product.Country" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Product.Weight"></label>
+                </div>
+                <div class="col-10">
+                    <input class="form-control" readonly asp-for="Product.Weight" />
+                </div>
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Product.Price"></label>
+                </div>
+                <div class="col-10">
+                    <input class="form-control" readonly asp-for="Product.Price" />
+                </div>
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Product.CategoryId"></label>
+                </div>
+                <div class="col-10">
+                    <select id="CategoryId" disabled asp-for="@Model.Product.CategoryId" asp-items="Model.Category.ToSelectListItems(Model.Product.CategoryId)" class="form-control"></select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Product.SubCategoryId"></label>
+                </div>
+                <div class="col-10">
+                    <select asp-for="@Model.Product.SubCategoryId" disabled id="SubCategoryId" name="SubCategoryId" asp-items="@(new SelectList(string.Empty,"Id","Name")) " class="form-control"></select>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-3 offset-1">
+            <p>Actual Image</p>
+            <img src="@Model.Product.Image" width="200" height="200" style="border-radius" />
+        </div>
+        <div class="col-11 ">
+            <partial name="_DeleteandBackPartial" model="Model.Product.Id" />
+        </div>
+    </div>
+    </form>
+
+    @section Scripts{
+        <script>
+            tinymce.init({
+                selector: 'textarea',
+                plugins: 'lists',
+                menubar: 'file edit format',
+                readonly: 1
+
+            });
+        </script>
+
+        <script type="text/javascript">
+        $(document).ready(function () {
+            getSubCategory();
+            $('#CategoryId').change(function () {
+                getSubCategory();
+            });
+        });
+
+        function getSubCategory() {
+            var url = '@Url.Content("~/")' + "Admin/SubCategory/GetSubCategory";
+            var source = '#CategoryId';
+            $.getJSON(url, { id: $(source).val() }, function (data) {
+                var items = '';
+                $('#SubCategoryId').empty();
+                $.each(data, function (i, subcategory) {
+                    items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>"
+                });
+
+                $('#SubCategoryId').html(items);
+            })
+
+        }
+        </script>
+
+        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

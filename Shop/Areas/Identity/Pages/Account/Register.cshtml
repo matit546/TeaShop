@@ -1,0 +1,123 @@
+﻿@page
+@using Shop.Utility
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<br />
+<h1 class="text-info">Create a new Account</h1>
+<br /><br />
+<form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+    <div class="border rounded bg-light px-md-4 p-4">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.Name"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.Name" />
+            </div>
+            <span asp-validation-for="Input.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.Email"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.Email" />
+            </div>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.Password"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.Password" />
+            </div>
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.ConfirmPassword"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.ConfirmPassword" />
+            </div>
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.PhoneNumber"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.PhoneNumber" />
+            </div>
+            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.State"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.State" />
+            </div>
+            <span asp-validation-for="Input.State" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.City"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.City" />
+            </div>
+            <span asp-validation-for="Input.City" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.StreetAddress"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.StreetAddress" />
+            </div>
+            <span asp-validation-for="Input.StreetAddress" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label class="col-form-label" asp-for="Input.PostalCode"></label>
+            </div>
+            <div class="col-5">
+                <input class="form-control" asp-for="Input.PostalCode" />
+            </div>
+            <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+        </div>
+
+        @if (User.IsInRole(StaticDefault.ManagerUser))
+        {
+            <div class="form-group row">
+                <div class="col-2">
+                    <label class="col-form-label" asp-for="Input.PostalCode"></label>
+                </div>
+                <div class="col-5">
+                    <input type="radio" name="UserRole" value="@StaticDefault.ManagerUser" checked />@StaticDefault.ManagerUser  
+                    <input type="radio" name="UserRole" value="@StaticDefault.FrontDeskUser" checked />@StaticDefault.FrontDeskUser  
+                    <input type="radio" name="UserRole" value="@StaticDefault.ShopUser" checked />@StaticDefault.ShopUser  
+                </div>
+            </div>
+        }
+
+        <div class="form-group row">
+            <div class="offset-2 col-5">
+                <button type="submit" class="btn btn-primary form-control">Register</button>
+            </div>
+        </div>
+    </div>
+  
+    
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

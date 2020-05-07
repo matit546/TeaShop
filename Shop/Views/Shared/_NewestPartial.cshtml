@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Product>
+
+
+@if (Model.Count() > 0)
+{
+    int b = 1;
+<div class="col-12 post @Model.FirstOrDefault().Category.Name.Replace(" ",string.Empty) product-shop">
+    <div class="row offset-6">
+        <h2 class="text-dark font-weight-bold">
+            @Model.FirstOrDefault().Category.Name
+        </h2>
+    </div>
+    <hr />
+
+    @foreach (var item in Model.Reverse().Take(4))
+    {
+  
+    <div class=" col-12 box-shadow-inset" style="margin-bottom:10px; margin-top:10px; margin-bottom:10px;padding:10px" id="@item.Name" onmouseover="myMoveFunctionnewset('@item.Name')" onmouseout="myMoveFunction1newest('@item.Name')">
+       
+            <div class="@item.Name row form-group" hidden>
+                <input type="hidden" asp-for="@item.Id" />
+                <div class="col-3 offset-3">
+                    <a asp-action="Details" class="form-control  btn" style="background:#00FF7F" asp-route-id="@item.Id">Details</a>
+                </div>
+                <div class="col-3">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="CreateProduct" onclick="return alert('Product has been added to your shopping cart');" class="form-control  btn btn-secondary" asp-route-id="@item.Id">Add to cart</a>
+                    }
+                    else
+                    {
+                        <a asp-action = "CreateProduct" class="form-control  btn btn-secondary" asp-route-id="@item.Id">Add to cart</a>
+                    }
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-12">
+                    <img src="@item.Image" height="250" width="250" style="border-radius:5px;border:1px solid #808080" />
+                </div>
+                <div class="col-md-9 col-sm-12">
+                    <div class="row">
+                        <div class="col-5">
+                            <label class="text-dark font-italic" style="font-size:21px;color:black">@b.@item.Name</label>
+                        </div>
+                        <div class="col-7 text-right" style="color:maroon">
+                            <h3>$@item.Price/@item.Weight</h3>
+                        </div>
+                    </div>
+                    <div class="row col-12 text-justify d-none d-md-block">
+                        <p>@Html.Raw(item.Description)</p>
+                    </div>
+                </div>
+            </div>
+    </div>
+        <br />
+        b++;
+    }
+    <div class="p-8">
+    </div>
+</div>
+}

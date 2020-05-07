@@ -1,0 +1,168 @@
+﻿@model Shop.Models.ViewModels.OrderListViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<form method="post">
+    <div class="border rounded box-shadow  bg-light p-4">
+        <h3 class="text-info">Orders Ready</h3>
+        <br />
+        <br />
+        <div class="row container">
+            <div class="col-11">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Editor("searchName", new { htmlAttributes = new { @class = "form-control", @placeholder = "Name.." } })
+                    </div>
+                    <div class="col-4">
+                        @Html.Editor("searchPhone", new { htmlAttributes = new { @class = "form-control", @placeholder = "Phone.." } })
+                    </div>
+                    <div class="col-4">
+                        @Html.Editor("searchEmail", new { htmlAttributes = new { @class = "form-control", @placeholder = "Email.." } })
+                    </div>
+                </div>
+            </div>
+            <div class="col-1">
+                <button type="submit" name="submit" value="Search" class=" btn btn-info form-control">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <br />
+        <div>
+            @if (Model.Orders.Count() > 0)
+            {
+
+                <table class="table table-striped border">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.Id)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.PickupName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.PhoneNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.User.Email)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.OrderTotal)
+                        </th>
+
+                        <th>Total items</th>
+                        <th>
+                            @Html.DisplayNameFor(m => m.Orders[0].OrderHeader.Status)
+                        </th>
+                        <td></td>
+
+                    </tr>
+                    @foreach (var item in Model.Orders)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(x => item.OrderHeader.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.OrderHeader.PickupName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.OrderHeader.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.OrderHeader.User.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.OrderHeader.OrderTotal)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.OrderDetails.Count)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.OrderHeader.Status)
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success Detail" data-id="@item.OrderHeader.Id" data-toggle="modal">
+                                    <i class="fa fa-list-alt">&nbsp;</i>Details
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+                <div page-model="@Model.PagingInfo" page-classes-enabled="true" page-class="btn border" page-class-normal="btn btn-light"
+                     page-class-selected="btn btn-info active" class="btn-group">
+                </div>
+
+
+            }
+            else
+            {
+                <b class="px-md-3">No Orders. </b>
+            }
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog-centered modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-light justify-content-center">
+                <div class="col-10 offset-1">
+                    <h5 class="modal-title">Order Details</h5>
+
+                </div>
+   
+
+                <div class="col-1">
+                    <button type="button" class="float-right btn-outline-secondary close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body justify-content-center" id="MyModalContent">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" style="width:20%" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+    {
+    <script>
+        var PostBackURL = '/Customer/Order/GetOrderDetails';
+
+        $(function () {
+            $(".Detail").click(function () {
+
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+                $.ajax({
+                    type: "GET",
+                    url: PostBackURL,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id },
+                    cache: false,
+                    datatyype: "json",
+                    success: function (data) {
+                        $('#MyModalContent').html(data);
+                        $('#myModal').modal('show');
+                    },
+                    error: function () {
+                        alert("fail");
+                    }
+
+                })
+
+            })
+        })
+
+    </script>
+}

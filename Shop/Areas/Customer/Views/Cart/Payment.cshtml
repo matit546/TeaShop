@@ -1,0 +1,40 @@
+﻿@model Shop.Models.ViewModels.OrderDetailsCart
+@using Shop.Utility
+@using Microsoft.Extensions.Options
+@inject IOptions<StripeSettings> Stripe
+@{
+    ViewData["Title"] = "Payment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class=" d-flex justify-content-center">
+    <div class="box-shadow col-8">
+        <h1 class="d-flex justify-content-center rounded">Payment</h1>
+        <hr />
+        <form asp-action="Pay" method="post">
+            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="@Stripe.Value.PublishableKey"
+                    data-amount="@Model.OrderHeader.OrderTotal"
+                    data-name="Shop"
+                    data-label="Place Order"
+                    data-description="Tea"
+                    data-locale="auto"
+                    data-allow-remember-me="false"
+                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png">
+
+            </script>
+            <script>
+                document.getElementsByClassName("stripe-button-el")[0].style.display = 'none';
+            </script>
+            <div class="offset-3 col-6 d-flex justify-content-center">
+                <button type="submit" id="btnPlacoOrder" onclick="return validateInput()" value="Place Order" class="btn btn-success form-control">Pay with Stripe</button>
+            </div>
+
+        </form>
+        <br />
+        <form asp-action="PayNormal" method="post">
+            <div class="offset-3 col-6 d-flex justify-content-center">
+                <button type="submit" id="btnPlacoOrder" onclick="return validateInput()" value="Place Order" class="btn btn-success form-control">Pay normally</button>
+            </div>
+        </form>
+    </div>
+</div>
